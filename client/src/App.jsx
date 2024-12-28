@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/common/Navbar';
+import './index.css';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
