@@ -1,4 +1,5 @@
 const Profile = require('../models/Profile');
+const User = require('../models/User');
 
 exports.createProfile = async (req, res) => {
   try {
@@ -47,6 +48,42 @@ exports.updateProfile = async (req, res) => {
     );
     res.json(profile);
   } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.searchProfiles = async (req, res) => {
+  try {
+    const { role, skills, availability } = req.query;
+    let query = {};
+
+    // Don't show current user in results
+    query.user = { $ne: req.user._id };
+
+    if (role) {
+      const users = await User.find({ role }).select('_id');
+      query.user = { $in: users.map(user => user._id), $ne: req.user._id };
+    }
+
+    if (skills) {
+      query.skills = { 
+        $regex: skills.split(',').map(skill => skill.trim()).join('|'), 
+        $options: 'i' 
+      };
+    }
+
+    if (availability) {
+      query.availability = availability;
+    }
+
+    const profiles = await Profile.find(query)
+      .populate('user', 'email role')
+      .select('-__v')
+      .lean();
+
+    res.json(profiles);
+  } catch (error) {
+    console.error('Search error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
