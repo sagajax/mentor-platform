@@ -1,20 +1,29 @@
-
-import React from 'react';
+// client/src/components/discovery/UserCard.jsx
+import React, { useState } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 const UserCard = ({ user }) => {
   const { user: currentUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [requestSent, setRequestSent] = useState(false);
 
   const sendConnectionRequest = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
+
       await api.post('/connections/request', {
-        recipientId: user.user._id // Updated to access user ID from nested user object
+        recipientId: user.user._id
       });
-      alert('Connection request sent successfully!');
+
+      setRequestSent(true);
     } catch (error) {
       console.error('Error sending connection request:', error);
-      alert('Failed to send connection request');
+      setError(error.response?.data?.message || 'Failed to send connection request');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -65,12 +74,29 @@ const UserCard = ({ user }) => {
         </p>
       )}
 
+      {error && (
+        <div className="text-red-500 text-sm mb-4">
+          {error}
+        </div>
+      )}
+
       {currentUser && user.user && currentUser._id !== user.user._id && (
         <button
           onClick={sendConnectionRequest}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
+          disabled={isLoading || requestSent}
+          className={`w-full py-2 rounded transition-colors ${
+            requestSent
+              ? 'bg-green-500 text-white'
+              : isLoading
+              ? 'bg-gray-400 text-white'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+          }`}
         >
-          Send Connection Request
+          {isLoading 
+            ? 'Sending...' 
+            : requestSent 
+            ? 'Request Sent' 
+            : 'Send Connection Request'}
         </button>
       )}
     </div>

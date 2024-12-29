@@ -12,4 +12,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const getConnections = () => {
+  return api.get('/connections/my-connections');
+};
+
+export const getPendingRequests = () => {
+  return api.get('/connections/pending-requests');
+};
+
+export const sendConnectionRequest = (recipientId) => {
+  return api.post('/connections/request', { recipientId });
+};
+
+export const respondToConnection = (connectionId, status) => {
+  return api.put(`/connections/respond/${connectionId}`, { status });
+};
+
+
 export default api;

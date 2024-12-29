@@ -1,4 +1,4 @@
-
+// client/src/components/common/Navbar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -15,6 +15,7 @@ const Navbar = () => {
             <>
               <Link to="/profile">Profile</Link>
               <Link to="/discovery">Find Matches</Link>
+              <Link to="/connections">Connections</Link>
               <button onClick={logout}>Logout</button>
             </>
           ) : (
@@ -27,4 +28,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

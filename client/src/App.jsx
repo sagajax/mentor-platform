@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import Discovery from './pages/Discovery';
+import Connections from './pages/Connections'; // Add this import
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 const App = () => {
@@ -31,6 +32,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Discovery />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/connections" 
+            element={
+              <ProtectedRoute>
+                <Connections />
               </ProtectedRoute>
             } 
           />
